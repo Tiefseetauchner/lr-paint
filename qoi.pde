@@ -20,6 +20,13 @@ void setup() {
     // I will know if you cheated
     // I will be very disappointed
     // And also delete your hardrive
+    // Now, you might say: Lena! Just calculate the image size, no more problems!
+    // Well, you would be WRONG
+    // Processing, this stupid piece of garbage doesn't like this:
+    // size(imageWidth * pixelWidth, imageHeight * pixelHeight + 50);
+    // Cuz "Use only numbers (not variables) for the size() command."
+    // SO LEAVE THE NUMBERS HERE ALONE
+    // Or at least don't pester me with it
     size(512, 562);
     
     updateColorSelect();
@@ -63,4 +70,8 @@ void mousePressed(MouseEvent event) {
         
         exit();
     }
+}
+
+void save() {
+    // Alright ok, this is it bois! Here goes what we all been waitin' for! POG
 }
