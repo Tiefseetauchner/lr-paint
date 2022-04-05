@@ -16,6 +16,10 @@ int pixelHeight = 8;
 
 void setup() {
     background(255);
+    // This too. Powers of two. The height 2^N+50
+    // I will know if you cheated
+    // I will be very disappointed
+    // And also delete your hardrive
     size(512, 562);
     
     updateColorSelect();
