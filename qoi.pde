@@ -15,7 +15,7 @@ int pixelHeight = 8;
 
 void setup() {
     background(255);
-    size(1024, 1074);
+    size(512, 562);
     
     updateColorSelect();
 }
@@ -39,9 +39,9 @@ void updateColorSelect() {
     }
     
     stroke(255, 255, 255);
-    strokeWeight(10);
+    strokeWeight(9);
     noFill();
-    rect(currentColorIndex * boxWidth, height - 50, boxWidth, 50);
+    rect((currentColorIndex * boxWidth) + 4, (height - 50) + 4, boxWidth - 8, 42);
     noStroke();
 }
 
