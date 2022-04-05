@@ -54,6 +54,8 @@ void mouseWheel(MouseEvent event) {
 
 void mousePressed(MouseEvent event) {
     if (event.getButton() == 39) {
+        println("Thank you for choosing this fucking hellhole of a program!");
+
         exit();
     }
 }
