@@ -1,18 +1,26 @@
 color[] colors = {
-    color(0,0,0),
-        color(255, 255, 255),
-        color(255, 0, 0),
-        color(0, 255, 0),
-        color(0, 0, 255),
-        color(255, 255, 0),
-        color(255, 0, 255),
-        color(0, 255, 255),
-    };
+    #000000,
+    #ffffff,
+    #ff0000,
+    #00ff00,
+    #0000ff,
+    #ffff00,
+    #ff00ff,
+    #00ffff,
+    // #000000,
+    // #000000,
+    // #000000,
+    // #000000,
+    // #000000,
+    // #000000,
+    // #000000,
+    // #000000,
+};
 int currentColorIndex = 0;
 
 // Please for the love of god leave this at powers of two
-int pixelWidth = 64;
-int pixelHeight = 64;
+int pixelWidth = 16;
+int pixelHeight = 16;
 
 void setup() {
     background(255);
@@ -28,7 +36,7 @@ void setup() {
     // SO LEAVE THE NUMBERS HERE ALONE
     // Or at least don't pester me with it
     size(512, 562);
-    
+
     updateColorSelect();
 }
 
@@ -51,9 +59,9 @@ void updateColorSelect() {
     }
     
     stroke(255, 255, 255);
-    strokeWeight(9);
+    strokeWeight(3);
     noFill();
-    rect((currentColorIndex * boxWidth) + 4,(height - 50) + 4, boxWidth - 8, 42);
+    rect((currentColorIndex * boxWidth) + 1,(height - 50) + 1, boxWidth - 2, 48);
     noStroke();
 }
 
@@ -78,13 +86,22 @@ void keyPressed(KeyEvent event) {
         case 83:
             save();
             break;
+        case 81:
+            exit();
+            break;
+        case 82:
+            background(255);
+            updateColorSelect();
+            break;
         default:
-        println("Lmao this key doesn't do anything lol");
+        println("Lmao this key doesn't do anything lol: " + event.getKeyCode());
         break;
     }
 }
 
 void save() {
+    int start = millis();
+    
     // Alright ok, this is it bois! Here goes what we all been waitin' for! POG
     
     OutputStream outputStream = createOutput("outputImage.qoi");
@@ -122,7 +139,7 @@ void save() {
         color[] image = getImageAsArray();
         
         Integer[] lookup = new Integer[64];
-
+        
         Integer prevPixel = color(0,0,0);
         
         int runLength = -1;
@@ -140,19 +157,13 @@ void save() {
             int pG = (prevPixel >> 8) & 0xFF;
             int pB = prevPixel & 0xFF;
             
+            int diffR = pR - r;
+            int diffG = pG - g;
+            int diffB = pB - b;
+            
             byte lookupIndex = (byte)((r * 3 + g * 5 + b * 7 + 255 * 11) % 64);
-
-            if (false) {
-                // QOI_OP_DIFF
-                byte out = 0b01000000;
-                outputStream.write(out);
-            } else if (false) {
-                // QOI_OP_LUMA
-                byte out1 = (byte) 0x80;
-                byte out2 = (byte) 0x00;
-                outputStream.write(out1);
-                outputStream.write(out2);
-            } else if (runLength == 0x3c || (prevPixel == c && c != nextPixel)) {
+            
+            if (runLength == 0x3c || (prevPixel == c && c != nextPixel)) {
                 // QOI_OP_RUN
                 runLength ++;
                 outputStream.write(runLength & 0xff | 0xc0);
@@ -162,6 +173,16 @@ void save() {
             } else if (c == lookup[lookupIndex]) {
                 // QOI_OP_INDEX
                 outputStream.write(lookupIndex & 0x3F);
+            } else if (false) {
+                // QOI_OP_DIFF
+                byte out = 0b01000000;
+                outputStream.write(out);
+            } else if (false) {
+                // QOI_OP_LUMA
+                byte out1 = (byte) 0x80;
+                byte out2 = (byte) 0x00;
+                outputStream.write(out1);
+                outputStream.write(out2);
             } else {
                 // QOI_OP_RGB                    
                 outputStream.write(0xFE);
@@ -185,6 +206,11 @@ void save() {
         outputStream.flush();
         
         outputStream.close();
+        
+        int end = millis();
+        
+        int dur = end - start;
+        println("save took " + dur + " ms");
     } catch(IOException e) {
         println("Well. Something went wrong. G R E A T");
         e.printStackTrace();
