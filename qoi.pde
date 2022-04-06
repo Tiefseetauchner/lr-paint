@@ -11,8 +11,8 @@ color[] colors = {
 int currentColorIndex = 0;
 
 // Please for the love of god leave this at powers of two
-int pixelWidth = 8;
-int pixelHeight = 4;
+int pixelWidth = 1;
+int pixelHeight = 1;
 
 void setup() {
     background(255);
@@ -92,35 +92,75 @@ void save() {
     // ...
     
     // Ok, so... Write the header first I guess?
-    
-    // Ight, anyone reading this, due to me being fucking STUPID and choosing Processing, 
-    // I have to convert my bytes I create to chars and write them cuz that's the only way
-    // I found to feed processing raw data. Y A Y
-    // Side effect I haven't reached yet, I'll have to split my ints into bytes... that's
-    // gonna be.... Interesting.
-    
-    // OMFG Char only helps me to 128 DAMMIT
-    
-    // But hey! Magic is easy enough, thank god
-    outputStream.write("qoif".getBytes());
-    
-    // This will not work if your image is larger than 2,147,483,648 px
-    // Please don't make 2,147,483,648 px large images in this program
-    // Respect your sanity
+    try {
+        outputStream.write("qoif".getBytes());
+        
+        // This will not work if your image is larger than 2,147,483,648 px
+        // Please don't make 2,147,483,648 px large images in this program
+        // Respect your sanity
+        int imageWidth = width / pixelWidth;
+        int imageHeight = (height - 50) / pixelHeight;
+        
+        // Write width information
+        for (int i = 3; i >= 0; i--) {
+            outputStream.write((byte)(imageWidth >> (i * 8)) & 0xff);
+        }
+        
+        // Write height information
+        for (int i = 3; i >= 0; i--) {
+            outputStream.write((byte)(imageHeight >> (i * 8)) & 0xff);
+        }
+        
+        // Write channel information
+        outputStream.write(3);  
+        
+        // Write colorspace information
+        outputStream.write(1);
+        
+        // The magic :tm: start
+        
+        color[][] image = getImageAsArray();
+        
+        for (color[] row : image) {
+            for (color c : row) {
+                int r = (c >> 16) & 0xFF;
+                int g = (c >> 8) & 0xFF;
+                int b = c & 0xFF;
+                
+                outputStream.write(0xFE);
+                outputStream.write(r);
+                outputStream.write(g);
+                outputStream.write(b);
+            }
+        }
+        
+        // The magic :tm: end
+        
+        // EOF
+        for (int i = 0; i < 7; i++)
+            outputStream.write((byte) 0x00);
+        outputStream.write((byte) 0x01);
+        
+        outputStream.flush();
+        
+        outputStream.close();
+    } catch(IOException e) {
+        println("Well. Something went wrong. G R E A T");
+        e.printStackTrace();
+    }
+}
+
+color[][] getImageAsArray() {
     int imageWidth = width / pixelWidth;
     int imageHeight = (height - 50) / pixelHeight;
     
-    // Write width infor    mation
-    for (int i = 3; i >= 0; i--) {
-        outputStream.write((byte)(imageWidth >> (i * 8)) & 0xff);
+    color[][] out = new color[imageHeight][imageWidth];
+    
+    for (int ypoint = 0; ypoint < imageHeight; ypoint++) {
+        for (int xpoint = 0; xpoint < imageWidth; xpoint++) {
+            out[ypoint][xpoint] = get(xpoint * pixelWidth, ypoint * pixelHeight);
+        }
     }
     
-    // Write height information
-    for (int i = 3; i >= 0; i--) {
-        outputStream.write((byte)(imageHeight >> (i * 8)) & 0xff);
-    }
-    
-    outputStream.flush();
-    
-    outputStream.close();
+    return out;
 }
