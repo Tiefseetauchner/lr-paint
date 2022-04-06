@@ -87,7 +87,7 @@ void keyPressed(KeyEvent event) {
 void save() {
     // Alright ok, this is it bois! Here goes what we all been waitin' for! POG
     
-    PrintWriter output = createWriter("outputImage.qoi"); 
+    OutputStream outputStream = createOutput("outputImage.qoi");
     
     // ...
     
@@ -98,26 +98,29 @@ void save() {
     // I found to feed processing raw data. Y A Y
     // Side effect I haven't reached yet, I'll have to split my ints into bytes... that's
     // gonna be.... Interesting.
-
+    
     // OMFG Char only helps me to 128 DAMMIT
     
     // But hey! Magic is easy enough, thank god
-    output.print("qoif");
+    outputStream.write("qoif".getBytes());
     
+    // This will not work if your image is larger than 2,147,483,648 px
+    // Please don't make 2,147,483,648 px large images in this program
+    // Respect your sanity
     int imageWidth = width / pixelWidth;
     int imageHeight = (height - 50) / pixelHeight;
     
-    // Write width information
+    // Write width infor    mation
     for (int i = 3; i >= 0; i--) {
-        output.print((char) ((imageWidth >> (i * 8)) & 0xff));
+        outputStream.write((byte)(imageWidth >> (i * 8)) & 0xff);
     }
     
     // Write height information
     for (int i = 3; i >= 0; i--) {
-        output.print((char) ((imageHeight >> (i * 8)) & 0xff));
+        outputStream.write((byte)(imageHeight >> (i * 8)) & 0xff);
     }
     
-    output.flush();
+    outputStream.flush();
     
-    output.close();
+    outputStream.close();
 }
