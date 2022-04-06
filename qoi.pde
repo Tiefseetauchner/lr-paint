@@ -7,14 +7,14 @@ color[] colors = {
     #ffff00,
     #ff00ff,
     #00ffff,
-    // #000000,
-    // #000000,
-    // #000000,
-    // #000000,
-    // #000000,
-    // #000000,
-    // #000000,
-    // #000000,
+    #000000,
+    #000000,
+    #000000,
+    #000000,
+    #000000,
+    #000000,
+    #000000,
+    #000000,
 };
 int currentColorIndex = 0;
 
@@ -35,7 +35,11 @@ void setup() {
     // Cuz "Use only numbers (not variables) for the size() command."
     // SO LEAVE THE NUMBERS HERE ALONE
     // Or at least don't pester me with it
-    size(512, 562);
+    size(1024, 562);
+
+    for (int i = 0; i < 8; i++) {
+        colors[i + 8] = color(random(0, 255), random(0, 255), random(0, 255));
+    }
 
     updateColorSelect();
 }
