@@ -11,8 +11,8 @@ color[] colors = {
 int currentColorIndex = 0;
 
 // Please for the love of god leave this at powers of two
-int pixelWidth = 1;
-int pixelHeight = 1;
+int pixelWidth = 64;
+int pixelHeight = 64;
 
 void setup() {
     background(255);
@@ -119,19 +119,60 @@ void save() {
         
         // The magic :tm: start
         
-        color[][] image = getImageAsArray();
+        color[] image = getImageAsArray();
         
-        for (color[] row : image) {
-            for (color c : row) {
-                int r = (c >> 16) & 0xFF;
-                int g = (c >> 8) & 0xFF;
-                int b = c & 0xFF;
-                
+        Integer[] lookup = new Integer[64];
+
+        Integer prevPixel = color(0,0,0);
+        
+        int runLength = -1;
+        
+        for (int i = 0; i < image.length; i++) {
+            Integer c = image[i];
+            
+            Integer nextPixel = i + 1 < image.length ? image[i + 1] : color(0,0,0);
+            
+            int r = (c >> 16) & 0xFF;
+            int g = (c >> 8) & 0xFF;
+            int b = c & 0xFF;
+            
+            int pR = (prevPixel >> 16) & 0xFF;
+            int pG = (prevPixel >> 8) & 0xFF;
+            int pB = prevPixel & 0xFF;
+            
+            byte lookupIndex = (byte)((r * 3 + g * 5 + b * 7 + 255 * 11) % 64);
+
+            if (false) {
+                // QOI_OP_DIFF
+                byte out = 0b01000000;
+                outputStream.write(out);
+            } else if (false) {
+                // QOI_OP_LUMA
+                byte out1 = (byte) 0x80;
+                byte out2 = (byte) 0x00;
+                outputStream.write(out1);
+                outputStream.write(out2);
+            } else if (runLength == 0x3c || (prevPixel == c && c != nextPixel)) {
+                // QOI_OP_RUN
+                runLength ++;
+                outputStream.write(runLength & 0xff | 0xc0);
+                runLength = -1;
+            } else if (i + 1 != image.length && prevPixel == c && c == nextPixel) {
+                runLength ++;
+            } else if (c == lookup[lookupIndex]) {
+                // QOI_OP_INDEX
+                outputStream.write(lookupIndex & 0x3F);
+            } else {
+                // QOI_OP_RGB                    
                 outputStream.write(0xFE);
                 outputStream.write(r);
                 outputStream.write(g);
                 outputStream.write(b);
             }
+            
+            if (lookup[lookupIndex] == null)
+                lookup[lookupIndex] = c;
+            prevPixel = c;
         }
         
         // The magic :tm: end
@@ -150,15 +191,15 @@ void save() {
     }
 }
 
-color[][] getImageAsArray() {
+color[] getImageAsArray() {
     int imageWidth = width / pixelWidth;
     int imageHeight = (height - 50) / pixelHeight;
     
-    color[][] out = new color[imageHeight][imageWidth];
+    color[] out = new color[imageHeight * imageWidth];
     
     for (int ypoint = 0; ypoint < imageHeight; ypoint++) {
         for (int xpoint = 0; xpoint < imageWidth; xpoint++) {
-            out[ypoint][xpoint] = get(xpoint * pixelWidth, ypoint * pixelHeight);
+            out[ypoint * imageWidth + xpoint] = get(xpoint * pixelWidth, ypoint * pixelHeight);
         }
     }
     
