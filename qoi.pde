@@ -22,20 +22,15 @@ int currentColorIndex = 0;
 int pixelWidth = 16;
 int pixelHeight = 16;
 
+int imageWidth = 18;
+int imageHeight = 32;
+
+void settings() {
+    size(imageWidth * pixelWidth, imageHeight * pixelHeight + 50);
+}
+
 void setup() {
     background(255);
-    // This too. Powers of two. The height 2^N+50
-    // I will know if you cheated
-    // I will be very disappointed
-    // And also delete your hardrive
-    // Now, you might say: Lena! Just calculate the image size, no more problems!
-    // Well, you would be WRONG
-    // Processing, this stupid piece of garbage doesn't like this:
-    // size(imageWidth * pixelWidth, imageHeight * pixelHeight + 50);
-    // Cuz "Use only numbers (not variables) for the size() command."
-    // SO LEAVE THE NUMBERS HERE ALONE
-    // Or at least don't pester me with it
-    size(512, 562);
     
     for (int i = 0; i < 8; i++) {
         colors[i + 8] = color(random(0, 255), random(0, 255), random(0, 255));

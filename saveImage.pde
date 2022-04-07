@@ -14,17 +14,17 @@ void save() {
         // This will not work if your image is larger than 2,147,483,648 px
         // Please don't make 2,147,483,648 px large images in this program
         // Respect your sanity
-        int imageWidth = width / pixelWidth;
-        int imageHeight = (height - 50) / pixelHeight;
+        int imgWidth = width / pixelWidth;
+        int imgHeight = (height - 50) / pixelHeight;
         
         // Write width information
         for (int i = 3; i >= 0; i--) {
-            outputStream.write((byte)(imageWidth >> (i * 8)) & 0xff);
+            outputStream.write((byte)(imgWidth >> (i * 8)) & 0xff);
         }
         
         // Write height information
         for (int i = 3; i >= 0; i--) {
-            outputStream.write((byte)(imageHeight >> (i * 8)) & 0xff);
+            outputStream.write((byte)(imgHeight >> (i * 8)) & 0xff);
         }
         
         // Write channel information
@@ -120,14 +120,14 @@ void save() {
 }
 
 color[] getImageAsArray() {
-    int imageWidth = width / pixelWidth;
-    int imageHeight = (height - 50) / pixelHeight;
+    int imgWidth = width / pixelWidth;
+    int imgHeight = (height - 50) / pixelHeight;
     
-    color[] out = new color[imageHeight * imageWidth];
+    color[] out = new color[imgHeight * imgWidth];
     
-    for (int ypoint = 0; ypoint < imageHeight; ypoint++) {
-        for (int xpoint = 0; xpoint < imageWidth; xpoint++) {
-            out[ypoint * imageWidth + xpoint] = get(xpoint * pixelWidth, ypoint * pixelHeight);
+    for (int ypoint = 0; ypoint < imgHeight; ypoint++) {
+        for (int xpoint = 0; xpoint < imgWidth; xpoint++) {
+            out[ypoint * imgWidth + xpoint] = get(xpoint * pixelWidth, ypoint * pixelHeight);
         }
     }
     
