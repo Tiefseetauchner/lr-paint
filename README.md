@@ -1,4 +1,6 @@
-# lr-paint
+# lr-paint 
+![Our beautiful logo](https://user-images.githubusercontent.com/48085877/162256939-126893be-3d8b-4196-b2d0-487968032725.png)
+
 The absolute worst thing you will have ever seen. With QOI support!
 
 It's essentially MSPaint. But Better! In ANY way shape or form!
@@ -50,3 +52,16 @@ In LR-PAINT, you get 8 basic colors:
 * Cyan
 
 And even better, 8 **randomly** chosen colors! Don't like the colors you get? Restart the program and you get all new ones!
+
+### Saving files
+Best to last: You can save files. Not any files. No. You can save outputImage.qoi.
+
+QOI you may ask? Well, it's a new, extremely simple, lossless compression algorithm. It's great.
+
+I coded it in processing.
+
+...
+
+It was horrible.
+
+Please show me love I'm depressed
