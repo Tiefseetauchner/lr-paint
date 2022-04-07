@@ -7,8 +7,8 @@ color[] colors = {
     #ffff00,
     #ff00ff,
     #00ffff,
-    #af0000,
-    #b001ff,
+    #000000,
+    #000000,
     #000000,
     #000000,
     #000000,
@@ -37,15 +37,15 @@ void setup() {
     // Or at least don't pester me with it
     size(1024, 562);
     
-    // for (int i = 0; i < 8; i++) {
-    //     colors[i + 8] = color(random(0, 255), random(0, 255), random(0, 255));
-    // }
+    for (int i = 0; i < 8; i++) {
+        colors[i + 8] = color(random(0, 255), random(0, 255), random(0, 255));
+    }
     
     updateColorSelect();
 }
 
 void draw() {
-    if (mousePressed) {
+    if (mousePressed && (mouseButton == LEFT)) {
         if (mouseY < height - 50) {
             fill(colors[currentColorIndex]);
             rect(mouseX - (mouseX % pixelWidth), mouseY - (mouseY % pixelHeight), pixelWidth, pixelHeight);
@@ -78,9 +78,7 @@ void mouseWheel(MouseEvent event) {
 
 void mousePressed(MouseEvent event) {
     if (event.getButton() == 39) {
-        println("Thank you for choosing this fucking hellhole of a program!");
-        
-        exit();
+        println("This button is depricated because IT FUCKS. ME. UP.");
     }
 }
 
@@ -164,6 +162,11 @@ void save() {
             int diffR = (((r - pR + 2) % 256) + 256) % 256;
             int diffG = (((g - pG + 2) % 256) + 256) % 256;
             int diffB = (((b - pB + 2) % 256) + 256) % 256;
+            
+            int diffGLumaUnbiased = (((g - pG) % 256) + 256) % 256;
+            int diffRLuma = ((((r - pR) - diffGLumaUnbiased + 8) % 256) + 256) % 256;
+            int diffGLuma = (((g - pG + 32) % 256) + 256) % 256;
+            int diffBLuma = ((((b - pB) - diffGLumaUnbiased + 8) % 256) + 256) % 256;
 
             byte lookupIndex = (byte)((r * 3 + g * 5 + b * 7 + 255 * 11) % 64);
             
@@ -173,23 +176,18 @@ void save() {
                 outputStream.write(runLength & 0xff | 0xc0);
                 runLength = -1;
             } else if (i + 1 != image.length && prevPixel == c && c == nextPixel) {
+                // QOI_OP_RUN Next pixel same
                 runLength ++;
             } else if (c == lookup[lookupIndex]) {
                 // QOI_OP_INDEX
                 outputStream.write(lookupIndex & 0x3F);
             } else if (diffR < 4 && diffG < 4 && diffB < 4) {
                 // QOI_OP_DIFF
-                byte out = 0b01000000;
-
-                out = (byte) (out | (diffR << 4) | (diffG << 2) | diffB);
-                
-                outputStream.write(out);
-            } else if (false) {
+                outputStream.write(0x40 | (0x7F & ((diffR << 4) | (diffG << 2) | diffB)));
+            } else if (diffRLuma < 16 && diffBLuma < 16 && diffGLuma < 64) {
                 // QOI_OP_LUMA
-                byte out1 = (byte) 0x80;
-                byte out2 = (byte) 0x00;
-                outputStream.write(out1);
-                outputStream.write(out2);
+                outputStream.write(0x80 | (diffGLuma & 0x3f));
+                outputStream.write(((diffRLuma & 0x0f) << 4) | (diffBLuma & 0x0f));
             } else {
                 // QOI_OP_RGB                    
                 outputStream.write(0xFE);
