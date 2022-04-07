@@ -66,7 +66,7 @@ void save() {
             int diffBLuma = ((((b - pB) - diffGLumaUnbiased + 8) % 256) + 256) % 256;
             
             byte lookupIndex = (byte)((r * 3 + g * 5 + b * 7 + 255 * 11) % 64);
-
+            
             if (runLength == 0x3c || (prevPixel.equals(c) && !c.equals(nextPixel))) {
                 // QOI_OP_RUN
                 runLength ++;
@@ -92,10 +92,9 @@ void save() {
                 outputStream.write(g);
                 outputStream.write(b);
             }
-
-            if (lookup[lookupIndex] == null)
-                lookup[lookupIndex] = c;
-
+            
+            lookup[lookupIndex] = c;
+            
             prevPixel = c;
         }
         
