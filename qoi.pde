@@ -7,8 +7,8 @@ color[] colors = {
     #ffff00,
     #ff00ff,
     #00ffff,
-    #000000,
-    #000000,
+    #af0000,
+    #b001ff,
     #000000,
     #000000,
     #000000,
@@ -36,11 +36,11 @@ void setup() {
     // SO LEAVE THE NUMBERS HERE ALONE
     // Or at least don't pester me with it
     size(1024, 562);
-
-    for (int i = 0; i < 8; i++) {
-        colors[i + 8] = color(random(0, 255), random(0, 255), random(0, 255));
-    }
-
+    
+    // for (int i = 0; i < 8; i++) {
+    //     colors[i + 8] = color(random(0, 255), random(0, 255), random(0, 255));
+    // }
+    
     updateColorSelect();
 }
 
@@ -161,10 +161,10 @@ void save() {
             int pG = (prevPixel >> 8) & 0xFF;
             int pB = prevPixel & 0xFF;
             
-            int diffR = pR - r;
-            int diffG = pG - g;
-            int diffB = pB - b;
-            
+            int diffR = (((r - pR + 2) % 256) + 256) % 256;
+            int diffG = (((g - pG + 2) % 256) + 256) % 256;
+            int diffB = (((b - pB + 2) % 256) + 256) % 256;
+
             byte lookupIndex = (byte)((r * 3 + g * 5 + b * 7 + 255 * 11) % 64);
             
             if (runLength == 0x3c || (prevPixel == c && c != nextPixel)) {
@@ -177,9 +177,12 @@ void save() {
             } else if (c == lookup[lookupIndex]) {
                 // QOI_OP_INDEX
                 outputStream.write(lookupIndex & 0x3F);
-            } else if (false) {
+            } else if (diffR < 4 && diffG < 4 && diffB < 4) {
                 // QOI_OP_DIFF
                 byte out = 0b01000000;
+
+                out = (byte) (out | (diffR << 4) | (diffG << 2) | diffB);
+                
                 outputStream.write(out);
             } else if (false) {
                 // QOI_OP_LUMA
