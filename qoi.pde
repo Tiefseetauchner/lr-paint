@@ -35,7 +35,7 @@ void setup() {
     // Cuz "Use only numbers (not variables) for the size() command."
     // SO LEAVE THE NUMBERS HERE ALONE
     // Or at least don't pester me with it
-    size(1024, 562);
+    size(512, 562);
     
     for (int i = 0; i < 8; i++) {
         colors[i + 8] = color(random(0, 255), random(0, 255), random(0, 255));
@@ -92,6 +92,9 @@ void keyPressed(KeyEvent event) {
             exit();
             break;
         case 82:
+            for (int i = 0; i < 8; i++) {
+                colors[i + 8] = color(random(0, 255), random(0, 255), random(0, 255));
+            }
             background(255);
             updateColorSelect();
             break;
@@ -167,7 +170,7 @@ void save() {
             int diffRLuma = ((((r - pR) - diffGLumaUnbiased + 8) % 256) + 256) % 256;
             int diffGLuma = (((g - pG + 32) % 256) + 256) % 256;
             int diffBLuma = ((((b - pB) - diffGLumaUnbiased + 8) % 256) + 256) % 256;
-
+            
             byte lookupIndex = (byte)((r * 3 + g * 5 + b * 7 + 255 * 11) % 64);
             
             if (runLength == 0x3c || (prevPixel == c && c != nextPixel)) {
