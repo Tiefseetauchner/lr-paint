@@ -46,7 +46,7 @@ void save() {
         for (int i = 0; i < image.length; i++) {
             Integer c = image[i];
             
-            Integer nextPixel = i + 1 < image.length ? image[i + 1] : color(0,0,0);
+            Integer nextPixel = i + 1 < image.length ? image[i + 1] : null;
             
             int r = (c >> 16) & 0xFF;
             int g = (c >> 8) & 0xFF;
@@ -66,16 +66,16 @@ void save() {
             int diffBLuma = ((((b - pB) - diffGLumaUnbiased + 8) % 256) + 256) % 256;
             
             byte lookupIndex = (byte)((r * 3 + g * 5 + b * 7 + 255 * 11) % 64);
-            
-            if (runLength == 0x3c || (prevPixel == c && c != nextPixel)) {
+
+            if (runLength == 0x3c || (prevPixel.equals(c) && !c.equals(nextPixel))) {
                 // QOI_OP_RUN
                 runLength ++;
                 outputStream.write(runLength & 0xff | 0xc0);
                 runLength = -1;
-            } else if (i + 1 != image.length && prevPixel == c && c == nextPixel) {
+            } else if (prevPixel.equals(c) && c.equals(nextPixel)) {
                 // QOI_OP_RUN Next pixel same
                 runLength ++;
-            } else if (c == lookup[lookupIndex]) {
+            } else if (c.equals(lookup[lookupIndex])) {
                 // QOI_OP_INDEX
                 outputStream.write(lookupIndex & 0x3F);
             } else if (diffR < 4 && diffG < 4 && diffB < 4) {
@@ -92,9 +92,10 @@ void save() {
                 outputStream.write(g);
                 outputStream.write(b);
             }
-            
+
             if (lookup[lookupIndex] == null)
                 lookup[lookupIndex] = c;
+
             prevPixel = c;
         }
         
