@@ -18,12 +18,11 @@ color[] colors = {
 };
 int currentColorIndex = 0;
 
-// Please for the love of god leave this at powers of two
 int pixelWidth = 16;
 int pixelHeight = 16;
 
-int imageWidth = 18;
-int imageHeight = 32;
+int imageWidth = 64;
+int imageHeight = 64;
 
 void settings() {
     size(imageWidth * pixelWidth, imageHeight * pixelHeight + 50);
