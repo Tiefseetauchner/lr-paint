@@ -21,8 +21,10 @@ int currentColorIndex = 0;
 int pixelWidth = 16;
 int pixelHeight = 16;
 
-int imageWidth = 64;
-int imageHeight = 64;
+int imageWidth = 32;
+int imageHeight = 32;
+
+MenuBase currentMenu;
 
 void settings() {
     size(imageWidth * pixelWidth, imageHeight * pixelHeight + 50);
@@ -39,11 +41,15 @@ void setup() {
 }
 
 void draw() {
-    if (mousePressed && (mouseButton == LEFT)) {
-        if (mouseY < height - 50) {
-            fill(colors[currentColorIndex]);
-            rect(mouseX - (mouseX % pixelWidth), mouseY - (mouseY % pixelHeight), pixelWidth, pixelHeight);
+    if (currentMenu == null) {
+        if (mousePressed && (mouseButton == LEFT)) {
+            if (mouseY < height - 50) {
+                fill(colors[currentColorIndex]);
+                rect(mouseX - (mouseX % pixelWidth), mouseY - (mouseY % pixelHeight), pixelWidth, pixelHeight);
+            }
         }
+    } else {
+        
     }
 }
 
