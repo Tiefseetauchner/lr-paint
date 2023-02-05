@@ -20,11 +20,13 @@ public abstract class MenuBase {
 public class SaveMenu extends MenuBase {
   public SaveMenu() {
     menuWidth = width - 100;
-    menuHeight = height - 100;
+    menuHeight = 200;
 
     title = "Save File";
+    
+    Button saveButton = new Button("Save", (s) -> {});
 
-    content = new Grid(4, 4, new GuiItem[]{new Button(), new Button()}, 10, 50, menuWidth - 20, menuHeight - 60);
+    content = new Grid(2, 1, new GuiItem[]{new PlaceholderGuiItem(), saveButton}, 10, 50, menuWidth - 20, menuHeight - 60);
   }
 
   public void draw() {
@@ -39,6 +41,7 @@ public class SaveMenu extends MenuBase {
     rect(0, 0, menuWidth, menuHeight);
     
     fill(#ffffff);
+    textAlign(LEFT);
     textSize(40);
     text(title, 10, 35);
     

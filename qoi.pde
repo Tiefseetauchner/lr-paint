@@ -54,7 +54,7 @@ void draw() {
   if (currentMenu == null) {
     if (mousePressed && (mouseButton == LEFT)) {
       if (mouseY < height - 50) {
-        imageData[(mouseX / drawPixelWidth) + (mouseY / drawPixelHeight) * imageWidth] = colors[currentColorIndex];
+        imageData[constrain(mouseX / drawPixelWidth, 0, imageWidth - 1) + constrain((mouseY / drawPixelHeight), 0, imageHeight - 1) * imageWidth] = colors[currentColorIndex];
       }
     }
   } else {
@@ -111,7 +111,8 @@ void keyPressed(KeyEvent event) {
     for (int i = 0; i < 8; i++) {
       colors[i + 8] = color(random(0, 255), random(0, 255), random(0, 255));
     }
-    background(255);
+    for (int i = 0; i < imageWidth * imageHeight; i++)
+      imageData[i] = #FFFFFF;
     updateColorSelect();
     break;
   default:
