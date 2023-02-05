@@ -78,13 +78,6 @@ public class Grid {
   }
 
   public void draw() {
-    noFill();
-    stroke(100);
-    
-    rect(x, y, gridWidth, gridHeight);
-    
-    noStroke();
-
     int itemWidth = (gridWidth - padding * (columns - 1)) / columns;
     int itemHeight = (gridHeight - padding * (rows - 1)) / rows;
     
