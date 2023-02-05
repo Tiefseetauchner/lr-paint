@@ -23,8 +23,10 @@ public class SaveMenu extends MenuBase {
     menuHeight = 200;
 
     title = "Save File";
-    
-    Button saveButton = new Button("Save", (s) -> {});
+
+    Button saveButton = new Button("Save", (s) -> {
+    }
+    );
 
     content = new Grid(2, 1, new GuiItem[]{new PlaceholderGuiItem(), saveButton}, 10, 50, menuWidth - 20, menuHeight - 60);
   }
@@ -33,20 +35,20 @@ public class SaveMenu extends MenuBase {
     rectMode(CORNER);
     fill(0, 0, 0, 100);
     rect(0, 0, width, height);
-    
+
     push();
     translate(width / 2 - menuWidth / 2, height / 2 - menuHeight / 2);
-    
+
     fill(#505050);
     rect(0, 0, menuWidth, menuHeight);
-    
+
     fill(#ffffff);
     textAlign(LEFT);
     textSize(40);
     text(title, 10, 35);
-    
+
     content.draw();
-    
+
     pop();
   }
 }
@@ -59,7 +61,7 @@ public class Grid {
   private int y;
   private int gridWidth;
   private int gridHeight;
-  
+
   // For now this'll be hardcoded, I don't see a real benefit of exposing this
   private int padding = 5;
 
@@ -83,7 +85,7 @@ public class Grid {
   public void draw() {
     int itemWidth = (gridWidth - padding * (columns - 1)) / columns;
     int itemHeight = (gridHeight - padding * (rows - 1)) / rows;
-    
+
     for (int i = 0; i < items.length; i++) {
       items[i].draw(x + i % columns * (itemWidth + padding), y + i / columns * (itemHeight + padding), itemWidth, itemHeight);
     }
