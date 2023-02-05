@@ -56,11 +56,17 @@ void updateColorSelect() {
         rect(i * boxWidth, height - 50, boxWidth, 50);
     }
     
-    stroke(255, 255, 255);
+    colorMode(HSB, 255, 255, 255);
+    
+    color current = colors[currentColorIndex];
+    stroke(color((hue(current) + 128) % 256, saturation(current), (brightness(current) + 128) % 256));
     strokeWeight(3);
     noFill();
+    
     rect((currentColorIndex * boxWidth) + 1,(height - 50) + 1, boxWidth - 2, 48);
+    
     noStroke();
+    colorMode(RGB, 255, 255, 255);
 }
 
 
